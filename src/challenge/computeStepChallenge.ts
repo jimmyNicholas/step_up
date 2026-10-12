@@ -42,6 +42,15 @@ function coerceTeamSize(value: number): number {
   return value
 }
 
+export function normalizeChallengeInput(input: ChallengeInput): ChallengeInput {
+  return {
+    averageStepsPerPerson: coerceAverageStepsPerPerson(
+      input.averageStepsPerPerson,
+    ),
+    teamSize: coerceTeamSize(input.teamSize),
+  }
+}
+
 function computeComparisons(
   distanceMetres: number,
 ): Record<ComparisonId, number> {
@@ -73,10 +82,7 @@ function computeJourney(distanceKm: number): JourneySummary {
 }
 
 export function computeStepChallenge(input: ChallengeInput): ChallengeResult {
-  const averageStepsPerPerson = coerceAverageStepsPerPerson(
-    input.averageStepsPerPerson,
-  )
-  const teamSize = coerceTeamSize(input.teamSize)
+  const { averageStepsPerPerson, teamSize } = normalizeChallengeInput(input)
 
   const totalSteps = averageStepsPerPerson * teamSize
   const distanceMetres = totalSteps * METRES_PER_STEP

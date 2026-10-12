@@ -2,12 +2,42 @@ import { useState } from 'react'
 import './App.css'
 import {
   computeStepChallenge,
+  normalizeChallengeInput,
+  parseShareParams,
+  serializeShareParams,
+  type ChallengeInput,
   type ChallengeResult,
   type ComparisonId,
 } from './challenge'
 
 const DEFAULT_AVERAGE_STEPS = 0
 const DEFAULT_TEAM_SIZE = 10
+
+function readInitialState(): {
+  averageStepsPerPerson: string
+  teamSize: string
+  result: ChallengeResult
+  shareInputs: ChallengeInput
+} {
+  const shared = parseShareParams(window.location.search)
+  const shareInputs = normalizeChallengeInput({
+    averageStepsPerPerson:
+      shared?.averageStepsPerPerson ?? DEFAULT_AVERAGE_STEPS,
+    teamSize: shared?.teamSize ?? DEFAULT_TEAM_SIZE,
+  })
+
+  return {
+    averageStepsPerPerson: String(shareInputs.averageStepsPerPerson),
+    teamSize: String(shareInputs.teamSize),
+    result: computeStepChallenge(shareInputs),
+    shareInputs,
+  }
+}
+
+function shareUrlFor(inputs: ChallengeInput): string {
+  const query = serializeShareParams(inputs)
+  return `${window.location.pathname}?${query}${window.location.hash}`
+}
 
 const COMPARISON_CARDS: ReadonlyArray<{
   id: ComparisonId
@@ -39,24 +69,31 @@ function formatDistanceKm(value: number): string {
 }
 
 function App() {
+  const [initial] = useState(readInitialState)
   const [averageStepsPerPerson, setAverageStepsPerPerson] = useState(
-    String(DEFAULT_AVERAGE_STEPS),
+    initial.averageStepsPerPerson,
   )
-  const [teamSize, setTeamSize] = useState(String(DEFAULT_TEAM_SIZE))
-  const [result, setResult] = useState<ChallengeResult>(() =>
-    computeStepChallenge({
-      averageStepsPerPerson: DEFAULT_AVERAGE_STEPS,
-      teamSize: DEFAULT_TEAM_SIZE,
-    }),
+  const [teamSize, setTeamSize] = useState(initial.teamSize)
+  const [result, setResult] = useState<ChallengeResult>(initial.result)
+  const [shareInputs, setShareInputs] = useState<ChallengeInput>(
+    initial.shareInputs,
   )
 
   function handleCalculate() {
-    setResult(
-      computeStepChallenge({
-        averageStepsPerPerson: Number(averageStepsPerPerson),
-        teamSize: Number(teamSize),
-      }),
-    )
+    const inputs = normalizeChallengeInput({
+      averageStepsPerPerson: Number(averageStepsPerPerson),
+      teamSize: Number(teamSize),
+    })
+    setAverageStepsPerPerson(String(inputs.averageStepsPerPerson))
+    setTeamSize(String(inputs.teamSize))
+    setShareInputs(inputs)
+    setResult(computeStepChallenge(inputs))
+    window.history.replaceState(null, '', shareUrlFor(inputs))
+  }
+
+  async function handleCopyLink() {
+    const url = `${window.location.origin}${shareUrlFor(shareInputs)}`
+    await navigator.clipboard.writeText(url)
   }
 
   return (
@@ -92,9 +129,20 @@ function App() {
             />
           </div>
 
-          <button type="button" onClick={handleCalculate}>
-            Calculate
-          </button>
+          <div className="actions">
+            <button type="button" onClick={handleCalculate}>
+              Calculate
+            </button>
+            <button
+              type="button"
+              className="secondary"
+              onClick={() => {
+                void handleCopyLink()
+              }}
+            >
+              Copy link
+            </button>
+          </div>
         </section>
 
         <div className="stats">

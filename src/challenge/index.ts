@@ -10,7 +10,13 @@ export {
 } from './constants'
 export {
   computeStepChallenge,
+  normalizeChallengeInput,
   type ChallengeInput,
   type ChallengeResult,
   type JourneySummary,
 } from './computeStepChallenge'
+export {
+  parseShareParams,
+  serializeShareParams,
+  type ShareParams,
+} from './shareParams'

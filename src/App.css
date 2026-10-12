@@ -59,6 +59,11 @@
   font-size: 1rem;
 }
 
+.actions {
+  display: grid;
+  gap: 10px;
+}
+
 .card button {
   width: 100%;
   background: var(--ames-primary);
@@ -70,6 +75,12 @@
   font-size: 1rem;
   font-weight: 600;
   transition: 0.2s;
+}
+
+.card button.secondary {
+  background: transparent;
+  color: var(--ames-primary);
+  border: 2px solid var(--ames-primary);
 }
 
 .card button:hover {

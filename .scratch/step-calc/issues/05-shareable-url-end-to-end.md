@@ -4,9 +4,13 @@
 
 **Blocked by:** 02 Core metrics end-to-end
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] On load, `steps` and `team` query params hydrate inputs and drive the same compute path as Calculate
-- [ ] Calculate writes `steps` and `team` via `history.replaceState` (no history spam)
-- [ ] Copy link control copies a URL that reproduces the current result when opened
-- [ ] Vitest covers parse/serialize round-trips for the share params
+- [x] On load, `steps` and `team` query params hydrate inputs and drive the same compute path as Calculate
+- [x] Calculate writes `steps` and `team` via `history.replaceState` (no history spam)
+- [x] Copy link control copies a URL that reproduces the current result when opened
+- [x] Vitest covers parse/serialize round-trips for the share params
+
+## Answer
+
+Share helpers `parseShareParams` / `serializeShareParams` live on the challenge public surface with Vitest round-trips. App hydrates from `?steps=&team=` on load, `replaceState`s on Calculate, and Copy link writes the absolute share URL to the clipboard.
