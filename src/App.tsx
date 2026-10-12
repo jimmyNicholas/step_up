@@ -136,6 +136,33 @@ function App() {
           </div>
         ))}
       </div>
+
+      <section className="journey-card">
+        <h2>How far from Melbourne has your team travelled?</h2>
+        <p className="journey-note">
+          Distances are as the crow flies from Melbourne GPO.
+        </p>
+        <div className="stats">
+          <div className="stat-card">
+            <div className="stat-label">Last Reached</div>
+            <div className="stat-value">{result.journey.lastReached.name}</div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-label">Next Destination</div>
+            <div className="stat-value">
+              {result.journey.next
+                ? result.journey.next.name
+                : 'Journey Complete'}
+            </div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-label">Distance Remaining</div>
+            <div className="stat-value">
+              {formatInteger(result.journey.remainingKm)} km
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   )
 }

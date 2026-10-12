@@ -79,6 +79,11 @@ describe('computeStepChallenge', () => {
         mosquito: 0,
         blueWhale: 0,
       },
+      journey: {
+        lastReached: { name: 'Melbourne CBD', distanceKm: 0 },
+        next: { name: 'Geelong', distanceKm: 65 },
+        remainingKm: 65,
+      },
     })
 
     expect(
@@ -94,5 +99,50 @@ describe('computeStepChallenge', () => {
         teamSize: 5,
       }).totalSteps,
     ).toBe(0)
+  })
+
+  it('reports Melbourne CBD with next Geelong before meaningful progress', () => {
+    // 50 km is still short of Geelong (65 km crow-flies)
+    const result = computeStepChallenge({
+      averageStepsPerPerson: (50 * 1000) / 0.7,
+      teamSize: 1,
+    })
+
+    expect(result.distanceKm).toBeCloseTo(50, 10)
+    expect(result.journey).toEqual({
+      lastReached: { name: 'Melbourne CBD', distanceKm: 0 },
+      next: { name: 'Geelong', distanceKm: 65 },
+      remainingKm: 15,
+    })
+  })
+
+  it('reports mid-list last reached, next, and remaining km', () => {
+    // 500 km lies between Canberra (467) and Sydney (713)
+    // distanceKm = steps × 0.70 / 1000 → steps = 500 × 1000 / 0.70
+    const result = computeStepChallenge({
+      averageStepsPerPerson: (500 * 1000) / 0.7,
+      teamSize: 1,
+    })
+
+    expect(result.distanceKm).toBeCloseTo(500, 10)
+    expect(result.journey).toEqual({
+      lastReached: { name: 'Canberra', distanceKm: 467 },
+      next: { name: 'Sydney', distanceKm: 713 },
+      remainingKm: 213,
+    })
+  })
+
+  it('reports journey complete past the final milestone', () => {
+    // London is 16_904 km; 17_000 km is past the end of the list
+    const result = computeStepChallenge({
+      averageStepsPerPerson: (17_000 * 1000) / 0.7,
+      teamSize: 1,
+    })
+
+    expect(result.journey).toEqual({
+      lastReached: { name: 'London', distanceKm: 16_904 },
+      next: null,
+      remainingKm: 0,
+    })
   })
 })
