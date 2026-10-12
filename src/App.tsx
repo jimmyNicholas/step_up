@@ -72,6 +72,33 @@ function formatDistanceKm(value: number): string {
   return value.toLocaleString(undefined, { maximumFractionDigits: 2 })
 }
 
+const MAIN_STATS: ReadonlyArray<{
+  emoji: string
+  label: string
+  format: (result: ChallengeResult) => string
+}> = [
+  {
+    emoji: '👣',
+    label: 'Total Steps',
+    format: (result) => formatInteger(result.totalSteps),
+  },
+  {
+    emoji: '🗺️',
+    label: 'Distance Travelled',
+    format: (result) => `${formatDistanceKm(result.distanceKm)} km`,
+  },
+  {
+    emoji: '🏃',
+    label: 'Marathons',
+    format: (result) => result.marathons.toFixed(1),
+  },
+  {
+    emoji: '🌙',
+    label: 'Moon Progress',
+    format: (result) => `${result.moonPercent.toFixed(2)}%`,
+  },
+]
+
 function App() {
   const [initial] = useState(readInitialState)
   const [averageStepsPerPerson, setAverageStepsPerPerson] = useState(
@@ -114,10 +141,10 @@ function App() {
         <p>Team step challenge calculator</p>
       </header>
 
-      <div className="grid">
-        <section className="card">
-          <h2>Enter average steps per person and team size.</h2>
+      <section className="card input-card">
+        <h2>Enter average steps per person and team size.</h2>
 
+        <div className="input-row">
           <div className="input-group">
             <label htmlFor="average-steps">Average steps per person</label>
             <input
@@ -154,31 +181,19 @@ function App() {
               Copy link
             </button>
           </div>
-        </section>
-
-        <div className="stats">
-          <div className="stat-card">
-            <div className="stat-label">Total Steps</div>
-            <div className="stat-value">{formatInteger(result.totalSteps)}</div>
-          </div>
-
-          <div className="stat-card">
-            <div className="stat-label">Distance Travelled</div>
-            <div className="stat-value">
-              {formatDistanceKm(result.distanceKm)} km
-            </div>
-          </div>
-
-          <div className="stat-card">
-            <div className="stat-label">Marathons</div>
-            <div className="stat-value">{result.marathons.toFixed(1)}</div>
-          </div>
-
-          <div className="stat-card">
-            <div className="stat-label">Moon Progress</div>
-            <div className="stat-value">{result.moonPercent.toFixed(2)}%</div>
-          </div>
         </div>
+      </section>
+
+      <div className="main-stats">
+        {MAIN_STATS.map((stat) => (
+          <div key={stat.label} className="stat-card">
+            <div className="emoji" aria-hidden="true">
+              {stat.emoji}
+            </div>
+            <div className="stat-value">{stat.format(result)}</div>
+            <div className="stat-label">{stat.label}</div>
+          </div>
+        ))}
       </div>
 
       <h2 className="section-title">Other Comparisons</h2>
