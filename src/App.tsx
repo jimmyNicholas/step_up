@@ -4,6 +4,7 @@ import {
   computeStepChallenge,
   normalizeChallengeInput,
   parseShareParams,
+  pickFunFact,
   serializeShareParams,
   type ChallengeInput,
   type ChallengeResult,
@@ -18,6 +19,7 @@ function readInitialState(): {
   teamSize: string
   result: ChallengeResult
   shareInputs: ChallengeInput
+  funFact: string
 } {
   const shared = parseShareParams(window.location.search)
   const shareInputs = normalizeChallengeInput({
@@ -25,12 +27,14 @@ function readInitialState(): {
       shared?.averageStepsPerPerson ?? DEFAULT_AVERAGE_STEPS,
     teamSize: shared?.teamSize ?? DEFAULT_TEAM_SIZE,
   })
+  const result = computeStepChallenge(shareInputs)
 
   return {
     averageStepsPerPerson: String(shareInputs.averageStepsPerPerson),
     teamSize: String(shareInputs.teamSize),
-    result: computeStepChallenge(shareInputs),
+    result,
     shareInputs,
+    funFact: pickFunFact(result),
   }
 }
 
@@ -78,17 +82,24 @@ function App() {
   const [shareInputs, setShareInputs] = useState<ChallengeInput>(
     initial.shareInputs,
   )
+  const [funFact, setFunFact] = useState(initial.funFact)
 
   function handleCalculate() {
     const inputs = normalizeChallengeInput({
       averageStepsPerPerson: Number(averageStepsPerPerson),
       teamSize: Number(teamSize),
     })
+    const nextResult = computeStepChallenge(inputs)
     setAverageStepsPerPerson(String(inputs.averageStepsPerPerson))
     setTeamSize(String(inputs.teamSize))
     setShareInputs(inputs)
-    setResult(computeStepChallenge(inputs))
+    setResult(nextResult)
+    setFunFact(pickFunFact(nextResult))
     window.history.replaceState(null, '', shareUrlFor(inputs))
+  }
+
+  function handleAnotherFact() {
+    setFunFact((current) => pickFunFact(result, current))
   }
 
   async function handleCopyLink() {
@@ -210,6 +221,14 @@ function App() {
             </div>
           </div>
         </div>
+      </section>
+
+      <section className="fun-fact">
+        <h2>Random Fun Fact</h2>
+        <p>{funFact}</p>
+        <button type="button" onClick={handleAnotherFact}>
+          Another Comparison
+        </button>
       </section>
     </div>
   )

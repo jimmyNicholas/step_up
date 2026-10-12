@@ -17,6 +17,19 @@ describe('computeStepChallenge', () => {
     expect(result.moonPercent).toBeCloseTo((70 / 384_400) * 100, 10)
   })
 
+  it('exposes factValues derived only from on-page metrics', () => {
+    // 70 km ÷ 5 km/h → 14 hours; 100_000 steps ÷ 3600 ≈ 28 hours at 1 step/s
+    const result = computeStepChallenge({
+      averageStepsPerPerson: 10_000,
+      teamSize: 10,
+    })
+
+    expect(result.factValues).toEqual({
+      casualWalkHours: 14,
+      oneStepPerSecondHours: 28,
+    })
+  })
+
   it('computes each object comparison as distance metres ÷ locked length', () => {
     // 10_000 × 10 → 70 km → 70_000 m
     const metres = 70_000
@@ -83,6 +96,10 @@ describe('computeStepChallenge', () => {
         lastReached: { name: 'Melbourne CBD', distanceKm: 0 },
         next: { name: 'Geelong', distanceKm: 65 },
         remainingKm: 65,
+      },
+      factValues: {
+        casualWalkHours: 0,
+        oneStepPerSecondHours: 0,
       },
     })
 

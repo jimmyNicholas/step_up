@@ -20,6 +20,12 @@ export const MARATHON_DISTANCE_KM = 42.195
 export const MEAN_EARTH_MOON_DISTANCE_KM = 384_400
 
 /**
+ * Casual walking speed used for number-driven fun facts.
+ * Source: commonly cited comfortable walk ≈ 5 km/h; locked per AMES Step Up product decision.
+ */
+export const CASUAL_WALK_KM_H = 5
+
+/**
  * Object comparison lengths in metres (locked product values for AMES Step Up).
  * Counts = distance in metres ÷ length. Sources are approximate typical sizes;
  * MCG is AFL goal-to-goal playing length (not cricket long axis).

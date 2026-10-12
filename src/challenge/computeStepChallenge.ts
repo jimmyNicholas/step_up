@@ -1,4 +1,5 @@
 import {
+  CASUAL_WALK_KM_H,
   COMPARISON_LENGTHS_M,
   JOURNEY_MILESTONES,
   MARATHON_DISTANCE_KM,
@@ -19,6 +20,13 @@ export type JourneySummary = {
   remainingKm: number
 }
 
+export type FactValues = {
+  /** Hours to cover distanceKm at {@link CASUAL_WALK_KM_H}, rounded up. */
+  casualWalkHours: number
+  /** Hours if taking one step per second, rounded. */
+  oneStepPerSecondHours: number
+}
+
 export type ChallengeResult = {
   totalSteps: number
   distanceKm: number
@@ -26,6 +34,7 @@ export type ChallengeResult = {
   moonPercent: number
   comparisons: Record<ComparisonId, number>
   journey: JourneySummary
+  factValues: FactValues
 }
 
 function coerceAverageStepsPerPerson(value: number): number {
@@ -91,6 +100,10 @@ export function computeStepChallenge(input: ChallengeInput): ChallengeResult {
   const moonPercent = (distanceKm / MEAN_EARTH_MOON_DISTANCE_KM) * 100
   const comparisons = computeComparisons(distanceMetres)
   const journey = computeJourney(distanceKm)
+  const factValues: FactValues = {
+    casualWalkHours: Math.ceil(distanceKm / CASUAL_WALK_KM_H),
+    oneStepPerSecondHours: Math.round(totalSteps / 3600),
+  }
 
   return {
     totalSteps,
@@ -99,5 +112,6 @@ export function computeStepChallenge(input: ChallengeInput): ChallengeResult {
     moonPercent,
     comparisons,
     journey,
+    factValues,
   }
 }

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  CASUAL_WALK_KM_H,
   COMPARISON_LENGTHS_M,
   JOURNEY_MILESTONES,
   MARATHON_DISTANCE_KM,
@@ -9,10 +10,11 @@ import {
 } from './constants'
 
 describe('cited challenge constants', () => {
-  it('locks step length, marathon distance, and moon distance to approved values', () => {
+  it('locks step length, marathon distance, moon distance, and casual walk speed', () => {
     expect(METRES_PER_STEP).toBe(0.7)
     expect(MARATHON_DISTANCE_KM).toBe(42.195)
     expect(MEAN_EARTH_MOON_DISTANCE_KM).toBe(384_400)
+    expect(CASUAL_WALK_KM_H).toBe(5)
   })
 
   it('locks each object comparison length in metres to approved values', () => {

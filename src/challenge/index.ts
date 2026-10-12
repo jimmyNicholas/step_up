@@ -1,4 +1,5 @@
 export {
+  CASUAL_WALK_KM_H,
   COMPARISON_LENGTHS_M,
   JOURNEY_MILESTONES,
   MARATHON_DISTANCE_KM,
@@ -13,8 +14,15 @@ export {
   normalizeChallengeInput,
   type ChallengeInput,
   type ChallengeResult,
+  type FactValues,
   type JourneySummary,
 } from './computeStepChallenge'
+export {
+  buildFunFacts,
+  pickFunFact,
+  type FunFact,
+  type FunFactKind,
+} from './funFacts'
 export {
   parseShareParams,
   serializeShareParams,
