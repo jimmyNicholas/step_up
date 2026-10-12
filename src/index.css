@@ -1,0 +1,24 @@
+:root {
+  --ames-primary: #d90049;
+  --ames-accent: #ff4f7f;
+  --ames-primary-light: #ffe5ee;
+  --background: #f5f7fa;
+  --card: #ffffff;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --success: #16a34a;
+  --border: #e5e7eb;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: var(--background);
+  color: var(--text);
+  line-height: 1.5;
+}
