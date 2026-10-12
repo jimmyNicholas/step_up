@@ -17,6 +17,28 @@ describe('computeStepChallenge', () => {
     expect(result.moonPercent).toBeCloseTo((70 / 384_400) * 100, 10)
   })
 
+  it('computes each object comparison as distance metres ÷ locked length', () => {
+    // 10_000 × 10 → 70 km → 70_000 m
+    const metres = 70_000
+    const result = computeStepChallenge({
+      averageStepsPerPerson: 10_000,
+      teamSize: 10,
+    })
+
+    expect(result.comparisons).toEqual({
+      crocodile: metres / 4.0,
+      beanCan: metres / 0.108,
+      flatWhite: metres / 0.09,
+      tram: metres / 33,
+      sausage: metres / 0.15,
+      mcg: metres / 160,
+      noodlePack: metres / 0.22,
+      textbook: metres / 0.03,
+      mosquito: metres / 0.006,
+      blueWhale: metres / 24,
+    })
+  })
+
   it('coerces empty or invalid team size to at least 1', () => {
     expect(
       computeStepChallenge({ averageStepsPerPerson: 100, teamSize: 0 })
@@ -45,6 +67,18 @@ describe('computeStepChallenge', () => {
       distanceKm: 0,
       marathons: 0,
       moonPercent: 0,
+      comparisons: {
+        crocodile: 0,
+        beanCan: 0,
+        flatWhite: 0,
+        tram: 0,
+        sausage: 0,
+        mcg: 0,
+        noodlePack: 0,
+        textbook: 0,
+        mosquito: 0,
+        blueWhale: 0,
+      },
     })
 
     expect(

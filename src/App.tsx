@@ -3,10 +3,32 @@ import './App.css'
 import {
   computeStepChallenge,
   type ChallengeResult,
+  type ComparisonId,
 } from './challenge'
 
 const DEFAULT_AVERAGE_STEPS = 0
 const DEFAULT_TEAM_SIZE = 10
+
+const COMPARISON_CARDS: ReadonlyArray<{
+  id: ComparisonId
+  emoji: string
+  label: string
+}> = [
+  { id: 'crocodile', emoji: '🐊', label: 'Crocodiles' },
+  { id: 'beanCan', emoji: '🥫', label: 'Baked Bean Cans' },
+  { id: 'flatWhite', emoji: '☕', label: 'Flat Whites' },
+  { id: 'tram', emoji: '🚋', label: 'Melbourne Trams' },
+  { id: 'sausage', emoji: '🌭', label: 'Sausages' },
+  {
+    id: 'mcg',
+    emoji: '🏟️',
+    label: 'MCG AFL ground lengths (goal-to-goal)',
+  },
+  { id: 'noodlePack', emoji: '🍜', label: 'Instant Noodle Packets' },
+  { id: 'textbook', emoji: '📚', label: 'Textbooks' },
+  { id: 'mosquito', emoji: '🦟', label: 'Mosquitoes' },
+  { id: 'blueWhale', emoji: '🐋', label: 'Blue Whales' },
+]
 
 function formatInteger(value: number): string {
   return Math.round(value).toLocaleString()
@@ -98,6 +120,21 @@ function App() {
             <div className="stat-value">{result.moonPercent.toFixed(2)}%</div>
           </div>
         </div>
+      </div>
+
+      <h2 className="section-title">Other Comparisons</h2>
+      <div className="comparisons">
+        {COMPARISON_CARDS.map((card) => (
+          <div key={card.id} className="comparison-card">
+            <div className="emoji" aria-hidden="true">
+              {card.emoji}
+            </div>
+            <div className="value">
+              {formatInteger(result.comparisons[card.id])}
+            </div>
+            <div>{card.label}</div>
+          </div>
+        ))}
       </div>
     </div>
   )

@@ -1,7 +1,9 @@
 import {
+  COMPARISON_LENGTHS_M,
   MARATHON_DISTANCE_KM,
   MEAN_EARTH_MOON_DISTANCE_KM,
   METRES_PER_STEP,
+  type ComparisonId,
 } from './constants'
 
 export type ChallengeInput = {
@@ -14,6 +16,7 @@ export type ChallengeResult = {
   distanceKm: number
   marathons: number
   moonPercent: number
+  comparisons: Record<ComparisonId, number>
 }
 
 function coerceAverageStepsPerPerson(value: number): number {
@@ -30,6 +33,16 @@ function coerceTeamSize(value: number): number {
   return value
 }
 
+function computeComparisons(
+  distanceMetres: number,
+): Record<ComparisonId, number> {
+  const comparisons = {} as Record<ComparisonId, number>
+  for (const id of Object.keys(COMPARISON_LENGTHS_M) as ComparisonId[]) {
+    comparisons[id] = distanceMetres / COMPARISON_LENGTHS_M[id]
+  }
+  return comparisons
+}
+
 export function computeStepChallenge(input: ChallengeInput): ChallengeResult {
   const averageStepsPerPerson = coerceAverageStepsPerPerson(
     input.averageStepsPerPerson,
@@ -37,14 +50,17 @@ export function computeStepChallenge(input: ChallengeInput): ChallengeResult {
   const teamSize = coerceTeamSize(input.teamSize)
 
   const totalSteps = averageStepsPerPerson * teamSize
-  const distanceKm = (totalSteps * METRES_PER_STEP) / 1000
+  const distanceMetres = totalSteps * METRES_PER_STEP
+  const distanceKm = distanceMetres / 1000
   const marathons = distanceKm / MARATHON_DISTANCE_KM
   const moonPercent = (distanceKm / MEAN_EARTH_MOON_DISTANCE_KM) * 100
+  const comparisons = computeComparisons(distanceMetres)
 
   return {
     totalSteps,
     distanceKm,
     marathons,
     moonPercent,
+    comparisons,
   }
 }
