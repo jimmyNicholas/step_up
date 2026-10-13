@@ -20,6 +20,14 @@ function tripPhrase(trips: number, destination: string): string {
   return `You're ${formatAmount(trips * 100)}% of the way from Melbourne to ${destination}`
 }
 
+/** "X times over" once the team has covered the whole thing, otherwise "X% of it". */
+function coverage(ratio: number): string {
+  if (ratio >= 1) {
+    return `Your team has covered it ${formatAmount(ratio)} times over.`
+  }
+  return `Your team has covered ${formatAmount(ratio * 100)}% of it.`
+}
+
 /**
  * Curated fun-fact pool. Number-driven facts interpolate
  * {@link ChallengeResult.factValues}; the rest are light general facts about
@@ -27,7 +35,6 @@ function tripPhrase(trips: number, destination: string): string {
  */
 export function buildFunFacts(result: ChallengeResult): readonly FunFact[] {
   const { factValues } = result
-
 
   const numberDriven: string[] = [
     `That's ${formatAmount(factValues.tanLaps)} laps of the Tan. Most people stop after one and go for a coffee.`,
@@ -43,6 +50,13 @@ export function buildFunFacts(result: ChallengeResult): readonly FunFact[] {
     `Walking it in one go at a relaxed 5 km/h would fill about ${formatAmount(factValues.casualWalkWorkdays)} standard 7.6-hour workdays. No meetings, just walking.`,
     `Taking one step every second, day and night, one person would need about ${formatAmount(factValues.oneStepPerSecondDays)} days to match your team.`,
     `${tripPhrase(factValues.hobartTrips, 'Hobart')} (Bass Strait swim not included).`,
+    `Spain's Camino Francés pilgrim route runs about 780 km from the French Pyrenees to Santiago de Compostela. ${coverage(factValues.caminoFrancesWalks)}`,
+    `A 2012 survey by China's heritage authority measured the Great Wall, with all its branches, at about 21,196 km. ${coverage(factValues.greatWallWalks)}`,
+    `The Appalachian Trail in the United States runs about 3,500 km from Georgia to Maine. ${coverage(factValues.appalachianTrailWalks)}`,
+    `At the Nijmegen Four Days Marches in the Netherlands, the longest route is 50 km a day for four days, 200 km in all. ${coverage(factValues.nijmegenMarches)}`,
+    factValues.raceWalks >= 1
+      ? `Race walking is an Olympic sport where judges watch that one foot always looks to be on the ground. Your distance is ${formatAmount(factValues.raceWalks)} Olympic 20 km race walks.`
+      : `Race walking is an Olympic sport where judges watch that one foot always looks to be on the ground. Your distance is ${formatAmount(factValues.raceWalks * 100)}% of an Olympic 20 km race walk.`,
   ]
 
   const staticFacts: string[] = [
@@ -50,11 +64,6 @@ export function buildFunFacts(result: ChallengeResult): readonly FunFact[] {
     'Leonardo da Vinci sketched a design for a mechanical pedometer more than 500 years ago.',
     'Each of your feet has 26 bones, so about a quarter of the bones in your body are in your feet.',
     "The word 'pedometer' comes from the Latin pes, meaning foot.",
-    "Spain's Camino Francés pilgrim route runs about 780 km from the French Pyrenees to Santiago de Compostela.",
-    "A 2012 survey by China's heritage authority measured the Great Wall, with all its branches, at about 21,196 km.",
-    'Race walking is an Olympic sport where judges watch that one foot always looks to be on the ground.',
-    "The Appalachian Trail in the United States runs about 3,500 km from Georgia to Maine.",
-    "Tens of thousands of people walk up to 50 km a day for four days straight at the Nijmegen Four Days Marches in the Netherlands.",
     'Ötzi the Iceman, who lived about 5,300 years ago in the Alps, was found wearing shoes made of bearskin, deer hide and grass.',
     "Japan's Forestry Agency coined the term shinrin-yoku, or 'forest bathing', in 1982 to encourage walks among trees.",
     "Venice's historic centre has no cars, so locals get around on foot or by boat.",

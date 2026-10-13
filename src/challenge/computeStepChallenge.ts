@@ -40,6 +40,12 @@ export type FactValues = {
   oneStepPerSecondDays: number
   /** Distance as multiples of the Melbourne GPO to Hobart great-circle distance. */
   hobartTrips: number
+  /** Distance as multiples of each international walk's length. */
+  caminoFrancesWalks: number
+  greatWallWalks: number
+  appalachianTrailWalks: number
+  nijmegenMarches: number
+  raceWalks: number
 }
 
 export type ChallengeResult = {
@@ -130,6 +136,11 @@ export function computeStepChallenge(input: ChallengeInput): ChallengeResult {
     casualWalkWorkdays: distanceKm / CASUAL_WALK_KM_H / refs.workdayHours,
     oneStepPerSecondDays: totalSteps / 86_400,
     hobartTrips: distanceKm / refs.hobartKm,
+    caminoFrancesWalks: distanceKm / refs.caminoFrancesKm,
+    greatWallWalks: distanceKm / refs.greatWallKm,
+    appalachianTrailWalks: distanceKm / refs.appalachianTrailKm,
+    nijmegenMarches: distanceKm / refs.nijmegenMarchKm,
+    raceWalks: distanceKm / refs.raceWalkKm,
   }
 
   return {

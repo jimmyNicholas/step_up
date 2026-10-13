@@ -41,6 +41,11 @@ describe('computeStepChallenge', () => {
     expect(factValues.casualWalkWorkdays).toBeCloseTo(14 / 7.6, 10)
     expect(factValues.oneStepPerSecondDays).toBeCloseTo(100_000 / 86_400, 10)
     expect(factValues.hobartTrips).toBeCloseTo(70 / 598, 10)
+    expect(factValues.caminoFrancesWalks).toBeCloseTo(70 / 780, 10)
+    expect(factValues.greatWallWalks).toBeCloseTo(70 / 21_196, 10)
+    expect(factValues.appalachianTrailWalks).toBeCloseTo(70 / 3500, 10)
+    expect(factValues.nijmegenMarches).toBeCloseTo(70 / 200, 10)
+    expect(factValues.raceWalks).toBeCloseTo(70 / 20, 10)
   })
 
   it('computes each object comparison as distance metres ÷ locked length', () => {
@@ -124,6 +129,11 @@ describe('computeStepChallenge', () => {
         casualWalkWorkdays: 0,
         oneStepPerSecondDays: 0,
         hobartTrips: 0,
+        caminoFrancesWalks: 0,
+        greatWallWalks: 0,
+        appalachianTrailWalks: 0,
+        nijmegenMarches: 0,
+        raceWalks: 0,
       },
     })
 

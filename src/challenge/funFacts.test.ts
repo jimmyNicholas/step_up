@@ -11,9 +11,9 @@ describe('buildFunFacts', () => {
     const facts = buildFunFacts(result)
 
     expect(facts.filter((fact) => fact.kind === 'number-driven')).toHaveLength(
-      11,
+      16,
     )
-    expect(facts.filter((fact) => fact.kind === 'static')).toHaveLength(12)
+    expect(facts.filter((fact) => fact.kind === 'static')).toHaveLength(7)
   })
 
   it('embeds values from the result into number-driven facts', () => {
@@ -33,6 +33,10 @@ describe('buildFunFacts', () => {
     expect(joined).toContain('1.84 standard 7.6-hour workdays')
     expect(joined).toContain('1.16 days to match your team')
     expect(joined).toContain('11.7% of the way from Melbourne to Hobart')
+    expect(joined).toContain('Compostela. Your team has covered 8.97% of it.')
+    expect(joined).toContain('Maine. Your team has covered 2% of it.')
+    expect(joined).toContain('200 km in all. Your team has covered 35% of it.')
+    expect(joined).toContain('Your distance is 3.5 Olympic 20 km race walks.')
   })
 
   it('switches to whole trips once a destination is passed', () => {
@@ -47,6 +51,8 @@ describe('buildFunFacts', () => {
 
     expect(joined).toContain('from Melbourne to Hobart 1.76 times')
     expect(joined).toContain('Great Ocean Road 4.32 times over')
+    expect(joined).toContain('Compostela. Your team has covered it 1.35 times over.')
+    expect(joined).toContain('Your team has covered 4.95% of it.')
   })
 })
 

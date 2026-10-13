@@ -142,4 +142,14 @@ export const FUN_FACT_REFERENCES = {
    * precomputed offline like {@link JOURNEY_MILESTONES}.
    */
   hobartKm: 598,
+  /** Camino Francés, Saint-Jean-Pied-de-Port to Santiago de Compostela ≈ 780 km (commonly cited route length). */
+  caminoFrancesKm: 780,
+  /** Great Wall of China including all branches ≈ 21,196 km (2012 State Administration of Cultural Heritage survey). */
+  greatWallKm: 21_196,
+  /** Appalachian Trail ≈ 3,500 km (about 2,190 miles, Appalachian Trail Conservancy). */
+  appalachianTrailKm: 3500,
+  /** Nijmegen Four Days Marches longest route: 4 days × 50 km = 200 km (Vierdaagse organisers). */
+  nijmegenMarchKm: 200,
+  /** Olympic race walk distance, 20 km (World Athletics). */
+  raceWalkKm: 20,
 } as const
