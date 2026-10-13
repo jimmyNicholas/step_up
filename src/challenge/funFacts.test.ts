@@ -32,7 +32,20 @@ describe('buildFunFacts', () => {
     expect(joined).toContain(`${result.moonPercent.toFixed(2)}%`)
     expect(joined).toContain('14')
     expect(joined).toContain('28')
-    expect(joined).toContain('Geelong')
+  })
+
+  it('omits crow-flies/GPO journey copy and dashboard-meta marathon/moon lines', () => {
+    const result = computeStepChallenge({
+      averageStepsPerPerson: 10_000,
+      teamSize: 10,
+    })
+    const joined = buildFunFacts(result)
+      .map((fact) => fact.text)
+      .join('\n')
+
+    expect(joined).not.toMatch(/crow[- ]flies/i)
+    expect(joined).not.toMatch(/Melbourne GPO/i)
+    expect(joined).not.toMatch(/come from the same .+ km on the dashboard/i)
   })
 
   it('still builds a pool when the journey is complete', () => {
@@ -41,9 +54,11 @@ describe('buildFunFacts', () => {
       teamSize: 1,
     })
     const facts = buildFunFacts(result)
+    const joined = facts.map((fact) => fact.text).join('\n')
 
     expect(facts.length).toBeGreaterThanOrEqual(20)
-    expect(facts.map((fact) => fact.text).join('\n')).toContain('London')
+    expect(joined).not.toMatch(/journey complete/i)
+    expect(joined).not.toMatch(/crow[- ]flies/i)
   })
 })
 

@@ -22,7 +22,6 @@ export function buildFunFacts(result: ChallengeResult): readonly FunFact[] {
     marathons,
     moonPercent,
     comparisons,
-    journey,
     factValues,
   } = result
 
@@ -46,11 +45,6 @@ export function buildFunFacts(result: ChallengeResult): readonly FunFact[] {
     `Stacked as textbooks, that's ${formatInteger(comparisons.textbook)} volumes.`,
     `Mosquito-sized: ${formatInteger(comparisons.mosquito)} of them in a line.`,
     `Blue-whale lengths: ${formatInteger(comparisons.blueWhale)}.`,
-    journey.next
-      ? `You still have ${formatInteger(journey.remainingKm)} km (as the crow flies) to reach ${journey.next.name}.`
-      : `You've passed every crow-flies milestone on the list — journey complete past ${journey.lastReached.name}.`,
-    `Last crow-flies waypoint reached: ${journey.lastReached.name} (${formatInteger(journey.lastReached.distanceKm)} km from Melbourne GPO).`,
-    `Your marathon total (${marathonLabel}) and moon progress (${moonPercent.toFixed(2)}%) come from the same ${formatInteger(distanceKm)} km on the dashboard.`,
   ]
 
   const staticFacts: string[] = [
