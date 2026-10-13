@@ -142,6 +142,4 @@ export const FUN_FACT_REFERENCES = {
    * precomputed offline like {@link JOURNEY_MILESTONES}.
    */
   hobartKm: 598,
-  perthKm: 2721,
-  uluruKm: 1909,
 } as const

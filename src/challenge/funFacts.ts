@@ -7,10 +7,6 @@ export type FunFact = {
   text: string
 }
 
-function formatInteger(value: number): string {
-  return Math.round(value).toLocaleString()
-}
-
 /** Whole numbers from 100 up, one decimal from 10, otherwise two decimals. */
 function formatAmount(value: number): string {
   const maximumFractionDigits = value >= 100 ? 0 : value >= 10 ? 1 : 2
@@ -25,23 +21,16 @@ function tripPhrase(trips: number, destination: string): string {
 }
 
 /**
- * Curated fun-fact pool (~20–25). About 80% interpolate on-page metrics /
- * {@link ChallengeResult.factValues}; the rest are light static workplace lines.
+ * Curated fun-fact pool. Number-driven facts interpolate
+ * {@link ChallengeResult.factValues}; the rest are light general facts about
+ * walking from Australia and around the world.
  */
 export function buildFunFacts(result: ChallengeResult): readonly FunFact[] {
-  const {
-    distanceKm,
-    marathons,
-    moonPercent,
-    journey,
-    factValues,
-  } = result
+  const { factValues } = result
 
-  const marathonLabel = marathons.toFixed(1)
 
   const numberDriven: string[] = [
     `That's ${formatAmount(factValues.tanLaps)} laps of the Tan. Most people stop after one and go for a coffee.`,
-    `Each team member walked about ${formatAmount(factValues.perPersonKm)} km on average, roughly ${formatAmount(factValues.perPersonTanLaps)} laps of the Tan each.`,
     factValues.greatOceanRoads >= 1
       ? `That's the full Great Ocean Road ${formatAmount(factValues.greatOceanRoads)} times over, without the car sickness.`
       : `That's ${formatAmount(factValues.greatOceanRoads * 100)}% of the Great Ocean Road, without the car sickness.`,
@@ -54,13 +43,6 @@ export function buildFunFacts(result: ChallengeResult): readonly FunFact[] {
     `Walking it in one go at a relaxed 5 km/h would fill about ${formatAmount(factValues.casualWalkWorkdays)} standard 7.6-hour workdays. No meetings, just walking.`,
     `Taking one step every second, day and night, one person would need about ${formatAmount(factValues.oneStepPerSecondDays)} days to match your team.`,
     `${tripPhrase(factValues.hobartTrips, 'Hobart')} (Bass Strait swim not included).`,
-    `${tripPhrase(factValues.perthTrips, 'Perth')}, as the crow flies across the Nullarbor.`,
-    `${tripPhrase(factValues.uluruTrips, 'Uluru')}, as the crow flies.`,
-    journey.next
-      ? `You still have ${formatInteger(journey.remainingKm)} km (as the crow flies) to reach ${journey.next.name}.`
-      : `You've passed every crow-flies milestone on the list — journey complete past ${journey.lastReached.name}.`,
-    `Last crow-flies waypoint reached: ${journey.lastReached.name} (${formatInteger(journey.lastReached.distanceKm)} km from Melbourne GPO).`,
-    `Your marathon total (${marathonLabel}) and moon progress (${moonPercent.toFixed(2)}%) come from the same ${formatInteger(distanceKm)} km on the dashboard.`,
   ]
 
   const staticFacts: string[] = [
@@ -68,6 +50,14 @@ export function buildFunFacts(result: ChallengeResult): readonly FunFact[] {
     'Leonardo da Vinci sketched a design for a mechanical pedometer more than 500 years ago.',
     'Each of your feet has 26 bones, so about a quarter of the bones in your body are in your feet.',
     "The word 'pedometer' comes from the Latin pes, meaning foot.",
+    "Spain's Camino Francés pilgrim route runs about 780 km from the French Pyrenees to Santiago de Compostela.",
+    "A 2012 survey by China's heritage authority measured the Great Wall, with all its branches, at about 21,196 km.",
+    'Race walking is an Olympic sport where judges watch that one foot always looks to be on the ground.',
+    "The Appalachian Trail in the United States runs about 3,500 km from Georgia to Maine.",
+    "Tens of thousands of people walk up to 50 km a day for four days straight at the Nijmegen Four Days Marches in the Netherlands.",
+    'Ötzi the Iceman, who lived about 5,300 years ago in the Alps, was found wearing shoes made of bearskin, deer hide and grass.',
+    "Japan's Forestry Agency coined the term shinrin-yoku, or 'forest bathing', in 1982 to encourage walks among trees.",
+    "Venice's historic centre has no cars, so locals get around on foot or by boat.",
   ]
 
   return [

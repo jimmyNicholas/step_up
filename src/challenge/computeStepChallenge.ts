@@ -26,11 +26,7 @@ export type FactValues = {
   casualWalkHours: number
   /** Hours if taking one step per second, rounded. */
   oneStepPerSecondHours: number
-  /** Average km walked by each team member. */
-  perPersonKm: number
   tanLaps: number
-  /** Laps of the Tan for each team member on average. */
-  perPersonTanLaps: number
   greatOceanRoads: number
   earthPercent: number
   everestsStacked: number
@@ -42,10 +38,8 @@ export type FactValues = {
   casualWalkWorkdays: number
   /** Days for one person taking one step per second, day and night. */
   oneStepPerSecondDays: number
-  /** Distance as multiples of the Melbourne GPO to destination great-circle distance. */
+  /** Distance as multiples of the Melbourne GPO to Hobart great-circle distance. */
   hobartTrips: number
-  perthTrips: number
-  uluruTrips: number
 }
 
 export type ChallengeResult = {
@@ -125,9 +119,7 @@ export function computeStepChallenge(input: ChallengeInput): ChallengeResult {
   const factValues: FactValues = {
     casualWalkHours: Math.ceil(distanceKm / CASUAL_WALK_KM_H),
     oneStepPerSecondHours: Math.round(totalSteps / 3600),
-    perPersonKm: distanceKm / teamSize,
     tanLaps: distanceKm / refs.tanLapKm,
-    perPersonTanLaps: distanceKm / teamSize / refs.tanLapKm,
     greatOceanRoads: distanceKm / refs.greatOceanRoadKm,
     earthPercent: (distanceKm / refs.earthCircumferenceKm) * 100,
     everestsStacked: distanceKm / refs.everestKm,
@@ -138,8 +130,6 @@ export function computeStepChallenge(input: ChallengeInput): ChallengeResult {
     casualWalkWorkdays: distanceKm / CASUAL_WALK_KM_H / refs.workdayHours,
     oneStepPerSecondDays: totalSteps / 86_400,
     hobartTrips: distanceKm / refs.hobartKm,
-    perthTrips: distanceKm / refs.perthKm,
-    uluruTrips: distanceKm / refs.uluruKm,
   }
 
   return {
