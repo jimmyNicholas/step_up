@@ -1,6 +1,7 @@
 import {
   CASUAL_WALK_KM_H,
   COMPARISON_LENGTHS_M,
+  FUN_FACT_REFERENCES,
   JOURNEY_MILESTONES,
   MARATHON_DISTANCE_KM,
   MEAN_EARTH_MOON_DISTANCE_KM,
@@ -25,6 +26,26 @@ export type FactValues = {
   casualWalkHours: number
   /** Hours if taking one step per second, rounded. */
   oneStepPerSecondHours: number
+  tanLaps: number
+  greatOceanRoads: number
+  earthPercent: number
+  everestsStacked: number
+  eurekaTowersStacked: number
+  lightMilliseconds: number
+  wombatSprintHours: number
+  snailYears: number
+  /** Standard 7.6-hour workdays needed to walk the distance at a casual pace. */
+  casualWalkWorkdays: number
+  /** Days for one person taking one step per second, day and night. */
+  oneStepPerSecondDays: number
+  /** Distance as multiples of the Melbourne GPO to Hobart great-circle distance. */
+  hobartTrips: number
+  /** Distance as multiples of each international walk's length. */
+  caminoFrancesWalks: number
+  greatWallWalks: number
+  appalachianTrailWalks: number
+  nijmegenMarches: number
+  raceWalks: number
 }
 
 export type ChallengeResult = {
@@ -92,6 +113,7 @@ function computeJourney(distanceKm: number): JourneySummary {
 
 export function computeStepChallenge(input: ChallengeInput): ChallengeResult {
   const { averageStepsPerPerson, teamSize } = normalizeChallengeInput(input)
+  const refs = FUN_FACT_REFERENCES
 
   const totalSteps = averageStepsPerPerson * teamSize
   const distanceMetres = totalSteps * METRES_PER_STEP
@@ -103,6 +125,22 @@ export function computeStepChallenge(input: ChallengeInput): ChallengeResult {
   const factValues: FactValues = {
     casualWalkHours: Math.ceil(distanceKm / CASUAL_WALK_KM_H),
     oneStepPerSecondHours: Math.round(totalSteps / 3600),
+    tanLaps: distanceKm / refs.tanLapKm,
+    greatOceanRoads: distanceKm / refs.greatOceanRoadKm,
+    earthPercent: (distanceKm / refs.earthCircumferenceKm) * 100,
+    everestsStacked: distanceKm / refs.everestKm,
+    eurekaTowersStacked: distanceKm / refs.eurekaTowerKm,
+    lightMilliseconds: (distanceKm / refs.lightKmPerSecond) * 1000,
+    wombatSprintHours: distanceKm / refs.wombatKmH,
+    snailYears: distanceKm / refs.snailKmH / (24 * 365.25),
+    casualWalkWorkdays: distanceKm / CASUAL_WALK_KM_H / refs.workdayHours,
+    oneStepPerSecondDays: totalSteps / 86_400,
+    hobartTrips: distanceKm / refs.hobartKm,
+    caminoFrancesWalks: distanceKm / refs.caminoFrancesKm,
+    greatWallWalks: distanceKm / refs.greatWallKm,
+    appalachianTrailWalks: distanceKm / refs.appalachianTrailKm,
+    nijmegenMarches: distanceKm / refs.nijmegenMarchKm,
+    raceWalks: distanceKm / refs.raceWalkKm,
   }
 
   return {

@@ -3,21 +3,21 @@ import { computeStepChallenge } from './computeStepChallenge'
 import { buildFunFacts, pickFunFact } from './funFacts'
 
 describe('buildFunFacts', () => {
-  it('returns about 20–25 facts with ~80% number-driven from the result', () => {
+  it('returns a pool of number-driven and general facts', () => {
     const result = computeStepChallenge({
       averageStepsPerPerson: 10_000,
       teamSize: 10,
     })
     const facts = buildFunFacts(result)
 
-    expect(facts.length).toBeGreaterThanOrEqual(20)
-    expect(facts.length).toBeLessThanOrEqual(25)
-
-    const numberDriven = facts.filter((fact) => fact.kind === 'number-driven')
-    expect(numberDriven.length / facts.length).toBeGreaterThanOrEqual(0.8)
+    expect(facts.filter((fact) => fact.kind === 'number-driven')).toHaveLength(
+      16,
+    )
+    expect(facts.filter((fact) => fact.kind === 'static')).toHaveLength(7)
   })
 
-  it('embeds formatted on-page metrics into number-driven facts', () => {
+  it('embeds values from the result into number-driven facts', () => {
+    // 10,000 × 10 → 100,000 steps → 70 km
     const result = computeStepChallenge({
       averageStepsPerPerson: 10_000,
       teamSize: 10,
@@ -26,39 +26,33 @@ describe('buildFunFacts', () => {
       .map((fact) => fact.text)
       .join('\n')
 
-    expect(joined).toContain('100,000')
-    expect(joined).toContain('70')
-    expect(joined).toContain(result.marathons.toFixed(1))
-    expect(joined).toContain(`${result.moonPercent.toFixed(2)}%`)
-    expect(joined).toContain('14')
-    expect(joined).toContain('28')
+    expect(joined).toContain('18.3 laps of the Tan')
+    expect(joined).toContain('7.91 Mount Everests')
+    expect(joined).toContain('235 Eureka Towers')
+    expect(joined).toContain('28.8% of the Great Ocean Road')
+    expect(joined).toContain('1.84 standard 7.6-hour workdays')
+    expect(joined).toContain('1.16 days to match your team')
+    expect(joined).toContain('11.7% of the way from Melbourne to Hobart')
+    expect(joined).toContain('Compostela. Your team has covered 8.97% of it.')
+    expect(joined).toContain('Maine. Your team has covered 2% of it.')
+    expect(joined).toContain('200 km in all. Your team has covered 35% of it.')
+    expect(joined).toContain('Your distance is 3.5 Olympic 20 km race walks.')
   })
 
-  it('omits crow-flies/GPO journey copy and dashboard-meta marathon/moon lines', () => {
+  it('switches to whole trips once a destination is passed', () => {
+    // 1,500,000 steps → 1,050 km, beyond Hobart (598 km) and the Great Ocean Road (243 km)
     const result = computeStepChallenge({
-      averageStepsPerPerson: 10_000,
-      teamSize: 10,
-    })
-    const joined = buildFunFacts(result)
-      .map((fact) => fact.text)
-      .join('\n')
-
-    expect(joined).not.toMatch(/crow[- ]flies/i)
-    expect(joined).not.toMatch(/Melbourne GPO/i)
-    expect(joined).not.toMatch(/come from the same .+ km on the dashboard/i)
-  })
-
-  it('still builds a pool when the journey is complete', () => {
-    const result = computeStepChallenge({
-      averageStepsPerPerson: (17_000 * 1000) / 0.7,
+      averageStepsPerPerson: 1_500_000,
       teamSize: 1,
     })
-    const facts = buildFunFacts(result)
-    const joined = facts.map((fact) => fact.text).join('\n')
+    const joined = buildFunFacts(result)
+      .map((fact) => fact.text)
+      .join('\n')
 
-    expect(facts.length).toBeGreaterThanOrEqual(20)
-    expect(joined).not.toMatch(/journey complete/i)
-    expect(joined).not.toMatch(/crow[- ]flies/i)
+    expect(joined).toContain('from Melbourne to Hobart 1.76 times')
+    expect(joined).toContain('Great Ocean Road 4.32 times over')
+    expect(joined).toContain('Compostela. Your team has covered it 1.35 times over.')
+    expect(joined).toContain('Your team has covered 4.95% of it.')
   })
 })
 

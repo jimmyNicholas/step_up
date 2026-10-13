@@ -113,3 +113,43 @@ export const JOURNEY_MILESTONES: readonly JourneyMilestone[] = [
   { name: 'New York', distanceKm: 16_672 },
   { name: 'London', distanceKm: 16_904 },
 ]
+
+/**
+ * Reference figures used only by number-driven fun facts. Each fact divides the
+ * challenge distance (or time derived from it) by one of these values.
+ */
+export const FUN_FACT_REFERENCES = {
+  /** Tan Track loop around the Royal Botanic Gardens Melbourne ≈ 3.827 km (City of Melbourne). */
+  tanLapKm: 3.827,
+  /** Great Ocean Road, Torquay to Allansford ≈ 243 km (Visit Victoria). */
+  greatOceanRoadKm: 243,
+  /** Earth equatorial circumference ≈ 40,075 km (NASA Earth fact sheet). */
+  earthCircumferenceKm: 40_075,
+  /** Mount Everest height 8,848.86 m (2020 China–Nepal joint survey). */
+  everestKm: 8.84886,
+  /** Eureka Tower height ≈ 297.3 m (CTBUH Skyscraper Center). */
+  eurekaTowerKm: 0.2973,
+  /** Speed of light in a vacuum, 299,792.458 km/s (SI definition). */
+  lightKmPerSecond: 299_792.458,
+  /** Common wombat top running speed ≈ 40 km/h (Australian Museum). */
+  wombatKmH: 40,
+  /** Garden snail cruising speed ≈ 1 mm/s, i.e. 0.0036 km/h (commonly cited approximation). */
+  snailKmH: 0.0036,
+  /** Standard full-time day: 38-hour week ÷ 5 = 7.6 hours (National Employment Standards). */
+  workdayHours: 7.6,
+  /**
+   * Great-circle km from {@link MELBOURNE_GPO} (mean Earth radius 6371 km), rounded,
+   * precomputed offline like {@link JOURNEY_MILESTONES}.
+   */
+  hobartKm: 598,
+  /** Camino Francés, Saint-Jean-Pied-de-Port to Santiago de Compostela ≈ 780 km (commonly cited route length). */
+  caminoFrancesKm: 780,
+  /** Great Wall of China including all branches ≈ 21,196 km (2012 State Administration of Cultural Heritage survey). */
+  greatWallKm: 21_196,
+  /** Appalachian Trail ≈ 3,500 km (about 2,190 miles, Appalachian Trail Conservancy). */
+  appalachianTrailKm: 3500,
+  /** Nijmegen Four Days Marches longest route: 4 days × 50 km = 200 km (Vierdaagse organisers). */
+  nijmegenMarchKm: 200,
+  /** Olympic race walk distance, 20 km (World Athletics). */
+  raceWalkKm: 20,
+} as const
