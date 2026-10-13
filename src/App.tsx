@@ -167,14 +167,13 @@ function App() {
       <Analytics />
       <header className="header">
         <h1>🚶 AMES Step Up</h1>
-        <p>Team step challenge calculator</p>
       </header>
 
       <div className="grid">
         <section className="card">
           <h2>Enter average steps per person and team size.</h2>
 
-          <div className="input-row">
+          <div className="form-row">
             <div className="input-group">
               <label htmlFor="average-steps">Average steps per person</label>
               <input
@@ -198,28 +197,28 @@ function App() {
                 onChange={(event) => setTeamSize(event.target.value)}
               />
             </div>
-          </div>
 
-          <div className="actions">
-            <button type="button" onClick={handleCalculate}>
-              Calculate
-            </button>
-            <div className="share-control">
-              <button
-                type="button"
-                className="secondary"
-                disabled={!canShare}
-                onClick={() => {
-                  void handleShare()
-                }}
-              >
-                Share
+            <div className="actions">
+              <button type="button" onClick={handleCalculate}>
+                Calculate
               </button>
-              {showShareToast ? (
-                <div className="share-toast" role="status">
-                  Link copied
-                </div>
-              ) : null}
+              <div className="share-control">
+                <button
+                  type="button"
+                  className="secondary"
+                  disabled={!canShare}
+                  onClick={() => {
+                    void handleShare()
+                  }}
+                >
+                  Share
+                </button>
+                {showShareToast ? (
+                  <div className="share-toast" role="status">
+                    Link copied
+                  </div>
+                ) : null}
+              </div>
             </div>
           </div>
         </section>

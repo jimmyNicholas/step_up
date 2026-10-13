@@ -6,6 +6,8 @@
 
 **Status:** ready-for-human
 
+- [x] Top `.grid` is **two rows**: inputs card full-width, then stats (not side-by-side columns)
+- [x] Card form is one `.form-row`: steps | team | Calculate+Share (stack on narrow); no header subtitle
 - [x] Average steps + team size sit **side-by-side** on desktop; **stack** vertically below the existing narrow breakpoint
 - [x] Primary share control label is **Share** (not “Copy link”)
 - [x] Share copies the current share URL to the clipboard and shows a non-blocking **toast** near the button (~2s, auto-dismiss) saying **Link copied**
@@ -20,3 +22,4 @@
 
 - Grilling locked 2026-10-13: subject = React port; full remaining fun-fact vet deferred to issue 10.
 - Implemented 2026-10-13: input row layout, Share + toast (token reset on re-click) + Calculate/`shareInputs` gating, prototype emojis, journey note removed, fun-fact #17–#19 deleted with Vitest updates. `npm test` / `npm run build` green.
+- Follow-ups (two-row grid, form-row, drop subtitle) were uncommitted and wiped when analytics landed on a clean tree ~14:20; re-applied 14:21 on top of analytics.
