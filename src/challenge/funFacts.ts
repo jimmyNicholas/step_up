@@ -37,10 +37,10 @@ export function buildFunFacts(result: ChallengeResult): readonly FunFact[] {
   const { factValues } = result
 
   const numberDriven: string[] = [
-    `That's ${formatAmount(factValues.tanLaps)} laps of the Tan. Most people stop after one and go for a coffee.`,
+    `Your team has walked ${formatAmount(factValues.tanLaps)} laps of the Tan. Most people stop after one and go for a coffee.`,
     factValues.greatOceanRoads >= 1
-      ? `That's the full Great Ocean Road ${formatAmount(factValues.greatOceanRoads)} times over, without the car sickness.`
-      : `That's ${formatAmount(factValues.greatOceanRoads * 100)}% of the Great Ocean Road, without the car sickness.`,
+      ? `Your team has walked the full Great Ocean Road ${formatAmount(factValues.greatOceanRoads)} times over, without the car sickness.`
+      : `Your team has walked ${formatAmount(factValues.greatOceanRoads * 100)}% of the Great Ocean Road, without the car sickness.`,
     `You've walked ${formatAmount(factValues.earthPercent)}% of the way around the Earth at the equator.`,
     `Pointed straight up, your distance would stack ${formatAmount(factValues.everestsStacked)} Mount Everests on top of each other.`,
     `Stood on end, that's ${formatAmount(factValues.eurekaTowersStacked)} Eureka Towers stacked one on top of the other.`,
