@@ -26,13 +26,32 @@ describe('buildFunFacts', () => {
       .map((fact) => fact.text)
       .join('\n')
 
-    expect(joined).toContain('100,000')
-    expect(joined).toContain('70')
-    expect(joined).toContain(result.marathons.toFixed(1))
+    // 70 km, 7 km each across a team of 10
+    expect(joined).toContain('18.3 laps of the Tan')
+    expect(joined).toContain('about 7 km on average')
+    expect(joined).toContain('7.91 Mount Everests')
+    expect(joined).toContain('235 Eureka Towers')
+    expect(joined).toContain('28.8% of the Great Ocean Road')
+    expect(joined).toContain('1.84 standard 7.6-hour workdays')
+    expect(joined).toContain('1.16 days to match your team')
+    expect(joined).toContain('11.7% of the way from Melbourne to Hobart')
     expect(joined).toContain(`${result.moonPercent.toFixed(2)}%`)
-    expect(joined).toContain('14')
-    expect(joined).toContain('28')
     expect(joined).toContain('Geelong')
+  })
+
+  it('switches destination facts from a percentage to whole trips past 100%', () => {
+    // 1,500,000 steps → 1,050 km, beyond Hobart (598 km) but short of Perth
+    const result = computeStepChallenge({
+      averageStepsPerPerson: 1_500_000,
+      teamSize: 1,
+    })
+    const joined = buildFunFacts(result)
+      .map((fact) => fact.text)
+      .join('\n')
+
+    expect(joined).toContain('from Melbourne to Hobart 1.76 times')
+    expect(joined).toContain('Great Ocean Road 4.32 times over')
+    expect(joined).toContain('38.6% of the way from Melbourne to Perth')
   })
 
   it('still builds a pool when the journey is complete', () => {

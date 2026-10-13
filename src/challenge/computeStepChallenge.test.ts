@@ -24,10 +24,27 @@ describe('computeStepChallenge', () => {
       teamSize: 10,
     })
 
-    expect(result.factValues).toEqual({
-      casualWalkHours: 14,
-      oneStepPerSecondHours: 28,
-    })
+    const { factValues } = result
+    expect(factValues.casualWalkHours).toBe(14)
+    expect(factValues.oneStepPerSecondHours).toBe(28)
+    expect(factValues.perPersonKm).toBe(7)
+    expect(factValues.tanLaps).toBeCloseTo(70 / 3.827, 10)
+    expect(factValues.perPersonTanLaps).toBeCloseTo(7 / 3.827, 10)
+    expect(factValues.greatOceanRoads).toBeCloseTo(70 / 243, 10)
+    expect(factValues.earthPercent).toBeCloseTo((70 / 40_075) * 100, 10)
+    expect(factValues.everestsStacked).toBeCloseTo(70 / 8.84886, 10)
+    expect(factValues.eurekaTowersStacked).toBeCloseTo(70 / 0.2973, 10)
+    expect(factValues.lightMilliseconds).toBeCloseTo(
+      (70 / 299_792.458) * 1000,
+      10,
+    )
+    expect(factValues.wombatSprintHours).toBeCloseTo(70 / 40, 10)
+    expect(factValues.snailYears).toBeCloseTo(70 / 0.0036 / 8766, 10)
+    expect(factValues.casualWalkWorkdays).toBeCloseTo(14 / 7.6, 10)
+    expect(factValues.oneStepPerSecondDays).toBeCloseTo(100_000 / 86_400, 10)
+    expect(factValues.hobartTrips).toBeCloseTo(70 / 598, 10)
+    expect(factValues.perthTrips).toBeCloseTo(70 / 2721, 10)
+    expect(factValues.uluruTrips).toBeCloseTo(70 / 1909, 10)
   })
 
   it('computes each object comparison as distance metres ÷ locked length', () => {
@@ -100,6 +117,21 @@ describe('computeStepChallenge', () => {
       factValues: {
         casualWalkHours: 0,
         oneStepPerSecondHours: 0,
+        perPersonKm: 0,
+        tanLaps: 0,
+        perPersonTanLaps: 0,
+        greatOceanRoads: 0,
+        earthPercent: 0,
+        everestsStacked: 0,
+        eurekaTowersStacked: 0,
+        lightMilliseconds: 0,
+        wombatSprintHours: 0,
+        snailYears: 0,
+        casualWalkWorkdays: 0,
+        oneStepPerSecondDays: 0,
+        hobartTrips: 0,
+        perthTrips: 0,
+        uluruTrips: 0,
       },
     })
 
