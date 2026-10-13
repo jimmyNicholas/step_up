@@ -4,7 +4,7 @@
 
 **Blocked by:** 07 Vercel Analytics events
 
-**Status:** ready-for-agent
+**Status:** claimed
 
 - [ ] Repository is available on the user’s personal GitHub as step_calc (or equivalent agreed remote name)
 - [ ] Personal Vercel project deploys the app to a default `*.vercel.app` URL

@@ -1,5 +1,7 @@
+import { Analytics } from '@vercel/analytics/react'
 import { useEffect, useState } from 'react'
 import './App.css'
+import { CHALLENGE_EVENTS, trackChallengeEvent } from './analytics'
 import {
   computeStepChallenge,
   normalizeChallengeInput,
@@ -14,6 +16,8 @@ import {
 const DEFAULT_AVERAGE_STEPS = 0
 const DEFAULT_TEAM_SIZE = 10
 const SHARE_TOAST_MS = 2000
+
+let didTrackHydrationCalculate = false
 
 function readInitialState(): {
   averageStepsPerPerson: string
@@ -120,6 +124,17 @@ function App() {
     }
   }, [shareToastToken])
 
+  useEffect(() => {
+    if (didTrackHydrationCalculate) {
+      return
+    }
+    if (parseShareParams(window.location.search) === null) {
+      return
+    }
+    didTrackHydrationCalculate = true
+    trackChallengeEvent(CHALLENGE_EVENTS.calculate)
+  }, [])
+
   function handleCalculate() {
     const inputs = normalizeChallengeInput({
       averageStepsPerPerson: Number(averageStepsPerPerson),
@@ -132,20 +147,24 @@ function App() {
     setResult(nextResult)
     setFunFact(pickFunFact(nextResult))
     window.history.replaceState(null, '', shareUrlFor(inputs))
+    trackChallengeEvent(CHALLENGE_EVENTS.calculate)
   }
 
   function handleAnotherFact() {
     setFunFact((current) => pickFunFact(result, current))
+    trackChallengeEvent(CHALLENGE_EVENTS.generateFact)
   }
 
   async function handleShare() {
     const url = `${window.location.origin}${shareUrlFor(shareInputs)}`
     await navigator.clipboard.writeText(url)
     setShareToastToken((token) => token + 1)
+    trackChallengeEvent(CHALLENGE_EVENTS.shareLink)
   }
 
   return (
     <div className="container">
+      <Analytics />
       <header className="header">
         <h1>🚶 AMES Step Up</h1>
         <p>Team step challenge calculator</p>

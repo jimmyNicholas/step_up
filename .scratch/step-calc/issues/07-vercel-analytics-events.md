@@ -4,7 +4,7 @@
 
 **Blocked by:** 05 Shareable URL end-to-end; 06 Fun facts end-to-end
 
-**Status:** ready-for-agent
+**Status:** claimed
 
 - [ ] Vercel Web Analytics is wired in a way appropriate for the Vite SPA
 - [ ] `calculate` fires when the user runs Calculate (and any intentional shared compute entry used for URL hydration, without double-counting cosmetic re-renders)
