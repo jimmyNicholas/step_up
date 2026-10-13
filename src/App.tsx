@@ -1,5 +1,7 @@
-import { useState } from 'react'
+import { Analytics } from '@vercel/analytics/react'
+import { useEffect, useState } from 'react'
 import './App.css'
+import { CHALLENGE_EVENTS, trackChallengeEvent } from './analytics'
 import {
   computeStepChallenge,
   normalizeChallengeInput,
@@ -13,6 +15,9 @@ import {
 
 const DEFAULT_AVERAGE_STEPS = 0
 const DEFAULT_TEAM_SIZE = 10
+const SHARE_TOAST_MS = 2000
+
+let didTrackHydrationCalculate = false
 
 function readInitialState(): {
   averageStepsPerPerson: string
@@ -41,6 +46,21 @@ function readInitialState(): {
 function shareUrlFor(inputs: ChallengeInput): string {
   const query = serializeShareParams(inputs)
   return `${window.location.pathname}?${query}${window.location.hash}`
+}
+
+function inputsMatchShare(
+  averageStepsPerPerson: string,
+  teamSize: string,
+  shareInputs: ChallengeInput,
+): boolean {
+  const current = normalizeChallengeInput({
+    averageStepsPerPerson: Number(averageStepsPerPerson),
+    teamSize: Number(teamSize),
+  })
+  return (
+    current.averageStepsPerPerson === shareInputs.averageStepsPerPerson &&
+    current.teamSize === shareInputs.teamSize
+  )
 }
 
 const COMPARISON_CARDS: ReadonlyArray<{
@@ -72,33 +92,6 @@ function formatDistanceKm(value: number): string {
   return value.toLocaleString(undefined, { maximumFractionDigits: 2 })
 }
 
-const MAIN_STATS: ReadonlyArray<{
-  emoji: string
-  label: string
-  format: (result: ChallengeResult) => string
-}> = [
-  {
-    emoji: '👣',
-    label: 'Total Steps',
-    format: (result) => formatInteger(result.totalSteps),
-  },
-  {
-    emoji: '🗺️',
-    label: 'Distance Travelled',
-    format: (result) => `${formatDistanceKm(result.distanceKm)} km`,
-  },
-  {
-    emoji: '🏃',
-    label: 'Marathons',
-    format: (result) => result.marathons.toFixed(1),
-  },
-  {
-    emoji: '🌙',
-    label: 'Moon Progress',
-    format: (result) => `${result.moonPercent.toFixed(2)}%`,
-  },
-]
-
 function App() {
   const [initial] = useState(readInitialState)
   const [averageStepsPerPerson, setAverageStepsPerPerson] = useState(
@@ -110,6 +103,37 @@ function App() {
     initial.shareInputs,
   )
   const [funFact, setFunFact] = useState(initial.funFact)
+  const [shareToastToken, setShareToastToken] = useState(0)
+
+  const canShare = inputsMatchShare(
+    averageStepsPerPerson,
+    teamSize,
+    shareInputs,
+  )
+  const showShareToast = shareToastToken > 0
+
+  useEffect(() => {
+    if (shareToastToken === 0) {
+      return
+    }
+    const timer = window.setTimeout(() => {
+      setShareToastToken(0)
+    }, SHARE_TOAST_MS)
+    return () => {
+      window.clearTimeout(timer)
+    }
+  }, [shareToastToken])
+
+  useEffect(() => {
+    if (didTrackHydrationCalculate) {
+      return
+    }
+    if (parseShareParams(window.location.search) === null) {
+      return
+    }
+    didTrackHydrationCalculate = true
+    trackChallengeEvent(CHALLENGE_EVENTS.calculate)
+  }, [])
 
   function handleCalculate() {
     const inputs = normalizeChallengeInput({
@@ -123,77 +147,105 @@ function App() {
     setResult(nextResult)
     setFunFact(pickFunFact(nextResult))
     window.history.replaceState(null, '', shareUrlFor(inputs))
+    trackChallengeEvent(CHALLENGE_EVENTS.calculate)
   }
 
   function handleAnotherFact() {
     setFunFact((current) => pickFunFact(result, current))
+    trackChallengeEvent(CHALLENGE_EVENTS.generateFact)
   }
 
-  async function handleCopyLink() {
+  async function handleShare() {
     const url = `${window.location.origin}${shareUrlFor(shareInputs)}`
     await navigator.clipboard.writeText(url)
+    setShareToastToken((token) => token + 1)
+    trackChallengeEvent(CHALLENGE_EVENTS.shareLink)
   }
 
   return (
     <div className="container">
+      <Analytics />
       <header className="header">
-        <h1>AMES Step Up</h1>
-        <p>Team step challenge calculator</p>
+        <h1>🚶 AMES Step Up</h1>
       </header>
 
-      <section className="card input-card">
-        <h2>Enter average steps per person and team size.</h2>
+      <div className="grid">
+        <section className="card">
+          <h2>Enter average steps per person and team size.</h2>
 
-        <div className="input-row">
-          <div className="input-group">
-            <label htmlFor="average-steps">Average steps per person</label>
-            <input
-              id="average-steps"
-              type="number"
-              min={0}
-              value={averageStepsPerPerson}
-              onChange={(event) => setAverageStepsPerPerson(event.target.value)}
-            />
+          <div className="form-row">
+            <div className="input-group">
+              <label htmlFor="average-steps">Average steps per person</label>
+              <input
+                id="average-steps"
+                type="number"
+                min={0}
+                value={averageStepsPerPerson}
+                onChange={(event) =>
+                  setAverageStepsPerPerson(event.target.value)
+                }
+              />
+            </div>
+
+            <div className="input-group">
+              <label htmlFor="team-size">Team size</label>
+              <input
+                id="team-size"
+                type="number"
+                min={1}
+                value={teamSize}
+                onChange={(event) => setTeamSize(event.target.value)}
+              />
+            </div>
+
+            <div className="actions">
+              <button type="button" onClick={handleCalculate}>
+                Calculate
+              </button>
+              <div className="share-control">
+                <button
+                  type="button"
+                  className="secondary"
+                  disabled={!canShare}
+                  onClick={() => {
+                    void handleShare()
+                  }}
+                >
+                  Share
+                </button>
+                {showShareToast ? (
+                  <div className="share-toast" role="status">
+                    Link copied
+                  </div>
+                ) : null}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div className="stats">
+          <div className="stat-card">
+            <div className="stat-label">👣 Total Steps</div>
+            <div className="stat-value">{formatInteger(result.totalSteps)}</div>
           </div>
 
-          <div className="input-group">
-            <label htmlFor="team-size">Team size</label>
-            <input
-              id="team-size"
-              type="number"
-              min={1}
-              value={teamSize}
-              onChange={(event) => setTeamSize(event.target.value)}
-            />
+          <div className="stat-card">
+            <div className="stat-label">📏 Distance Travelled</div>
+            <div className="stat-value">
+              {formatDistanceKm(result.distanceKm)} km
+            </div>
           </div>
 
-          <div className="actions">
-            <button type="button" onClick={handleCalculate}>
-              Calculate
-            </button>
-            <button
-              type="button"
-              className="secondary"
-              onClick={() => {
-                void handleCopyLink()
-              }}
-            >
-              Copy link
-            </button>
+          <div className="stat-card">
+            <div className="stat-label">🏃 Marathons</div>
+            <div className="stat-value">{result.marathons.toFixed(1)}</div>
+          </div>
+
+          <div className="stat-card">
+            <div className="stat-label">🌙 Moon Progress</div>
+            <div className="stat-value">{result.moonPercent.toFixed(2)}%</div>
           </div>
         </div>
-      </section>
-
-      <div className="main-stats">
-        {MAIN_STATS.map((stat) => (
-          <div key={stat.label} className="stat-card">
-            <div className="emoji" aria-hidden="true">
-              {stat.emoji}
-            </div>
-            <div className="stat-value">{stat.format(result)}</div>
-            <div className="stat-label">{stat.label}</div>
-          </div>
-        ))}
       </div>
 
       <h2 className="section-title">Other Comparisons</h2>
@@ -213,16 +265,13 @@ function App() {
 
       <section className="journey-card">
         <h2>How far from Melbourne has your team travelled?</h2>
-        <p className="journey-note">
-          Distances are as the crow flies from Melbourne GPO.
-        </p>
         <div className="stats">
           <div className="stat-card">
-            <div className="stat-label">Last Reached</div>
+            <div className="stat-label">✅ Last Reached</div>
             <div className="stat-value">{result.journey.lastReached.name}</div>
           </div>
           <div className="stat-card">
-            <div className="stat-label">Next Destination</div>
+            <div className="stat-label">🎯 Next Destination</div>
             <div className="stat-value">
               {result.journey.next
                 ? result.journey.next.name
@@ -230,7 +279,7 @@ function App() {
             </div>
           </div>
           <div className="stat-card">
-            <div className="stat-label">Distance Remaining</div>
+            <div className="stat-label">📍 Distance Remaining</div>
             <div className="stat-value">
               {formatInteger(result.journey.remainingKm)} km
             </div>
@@ -239,7 +288,7 @@ function App() {
       </section>
 
       <section className="fun-fact">
-        <h2>Random Fun Fact</h2>
+        <h2>🎲 Random Fun Fact</h2>
         <p>{funFact}</p>
         <button type="button" onClick={handleAnotherFact}>
           Another Comparison
