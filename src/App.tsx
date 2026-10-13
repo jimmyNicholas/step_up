@@ -291,7 +291,7 @@ function App() {
         <h2>🎲 Random Fun Fact</h2>
         <p>{funFact}</p>
         <button type="button" onClick={handleAnotherFact}>
-          Another Comparison
+          Another One
         </button>
       </section>
     </div>
